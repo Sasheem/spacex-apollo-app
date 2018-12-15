@@ -30,10 +30,24 @@ const typeDefs = gql`
         name: String
         missionPatch(size: PatchSize): String
     }
+    type TripUpdateResponse {
+        success: Boolean!
+        message: String
+        launches: [Launch]
+    }
     enum PatchSize {
         SMALL
         LARGE
     }
+    type Mutation {
+        # if false, booking trip failed -- check errors
+        bookTrips(launchIds: [ID]!): TripUpdateResponse!
+        #if false, cancellation failed -- check errors
+        cancelTrip(launchId: ID!): TripUpdateResponse!
+        # returns login token
+        login(email: String): String
+    }
+
 `;
 
 module.exports = typeDefs;
