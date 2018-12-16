@@ -15,7 +15,7 @@ const server = new ApolloServer({
     // connect to graph
     dataSources: () => ({
         launchAPI: new LaunchAPI(),
-        sserAPI: new UserAPI({ store }),
+        userAPI: new UserAPI({ store }),
     }) 
 });
 
