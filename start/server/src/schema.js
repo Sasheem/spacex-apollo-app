@@ -3,11 +3,27 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
     type Query {
         #query returns an array of launches, never null b/c !
-        launches: [Launch!]
+        # launches: [Launch!]
+        launches(
+            # the number of results to show. must be >= 1. default = 20
+            pageSize: Int
+            # if u add cursor here, only returns result after this cursor
+            after: String
+        ): LaunchConnection!
         #query to fetch a launch by ID and returns a single launch
         launch(id: ID!): Launch
         #Queries for the current user
         me: User
+    }
+    """
+        Simple wrapper around our list of launches that contains a cursor to the
+        last item in the list. Pass this cursor to the launches query to fetch results
+        after these.
+    """
+    type LaunchConnection{
+        cursor: String!
+        hasMore: Boolean!
+        launches: [Launch]!
     }
     type Launch {
         id: ID!
