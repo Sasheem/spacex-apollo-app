@@ -59,4 +59,34 @@ module.exports = {
         launch: (_, { id }, { dataSources }) => dataSources.launchAPI.getLaunchById({ launchId: id }),
         me: async (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser(),
     },
+    // can write resolvers for types in addition to Query and Mutations
+    Mission: {
+        // make sure default size is 'large' in case user doesn't specify
+        missionPatch: (mission, { size } = { size: 'LARGE' }) => {
+            return size === 'SMALL'
+                ? mission.missionPatchSmall
+                : mission.missionPatchLarge;
+        },
+    },
+    Launch: {
+        isBooked: async (launch, _, { dataSources }) => 
+            dataSources.userAPI.isBookedOnLaunch({ launchId: launch.id }),
+    },
+    User: {
+        // why don't we pass in 'user' as our parent arg? Can i? is it optional? test it out, 
+        // probably cuz we don't need to use it
+        trips: async (user, __, { dataSources }) => {
+            // get ids of launches by user
+            const launchIds = await dataSources.userAPI.getLaunchIdsByUser();
+
+            if (!launchIds.length) return [];
+
+            // look up these launches by their ids
+            return (
+                dataSources.launchAPI.getLaunchesByIds({
+                    launchIds,
+                }) || []
+            );
+        }
+    }
 };
