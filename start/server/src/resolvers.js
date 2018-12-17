@@ -1,38 +1,5 @@
 const { paginateResults } = require('./utils');
 
-// This seems complex, thought I was encouraged to keep these simple? may extract elsewhere
-{
-    Query: {
-        
-    }
-}
-// {
-//   Query: {
-//     launches: async (_, { pageSize = 20, after }, { dataSources }) => {
-//       const allLaunches = await dataSources.launchAPI.getAllLaunches();
-//       // we want these in reverse chronological order
-//       allLaunches.reverse();
-
-//       const launches = paginateResults({
-//         after,
-//         pageSize,
-//         results: allLaunches,
-//       });
-
-//       return {
-//         launches,
-//         cursor: launches.length ? launches[launches.length - 1].cursor : null,
-//         // if the cursor of the end of the paginated results is the same as the
-//         // last item in _all_ results, then there are no more results after this
-//         hasMore: launches.length
-//           ? launches[launches.length - 1].cursor !==
-//             allLaunches[allLaunches.length - 1].cursor
-//           : false,
-//       };
-//     }
-//   }
-// };
-
 module.exports = {
     Query: {
         // launches: async (_, __, { dataSources }) => dataSources.launchAPI.getAllLaunches(),
@@ -58,6 +25,46 @@ module.exports = {
         },
         launch: (_, { id }, { dataSources }) => dataSources.launchAPI.getLaunchById({ launchId: id }),
         me: async (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser(),
+    },
+    Mutation: {
+        login: async (_, { email }, { dataSources }) => {
+            const user = await dataSources.userAPI.findOrCreateUser({ email });
+            if (user) return new Buffer(email).toString('base64');
+        },
+        // KEEP IN MIND: you are including a partial success as a complete success. 
+        // In production, must handle both cases
+        bookTrips: async (_, { launchIds }, { dataSources }) => {
+            const result = await dataSources.userAPI.bookTrips({ launchIds });
+            const launches = await dataSources.launchAPI.getLaunchesByIds({
+                launchIds,
+            });
+
+            return {
+                success: results && results.length === launchIds.length,
+                message: results.length === launchIds.length
+                    ? 'trips booked successfully'
+                    : `the following launches could not be booked: ${launchIds.filter(
+                        id => !results.includes(id),
+                    )}`,
+                launches,
+            };
+        },
+        cancelTrip: async (_, { launchId }, { dataSources }) => {
+            const result = dataSources.userAPI.cancelTrip({ launchId });
+
+            if (!result) 
+                return {
+                    success: false,
+                    message: 'failed to cencel trip',
+                };
+            
+            const launch = await dataSources.launchAPI.getLaunchById({ launchId });
+            return {
+                success: true,
+                message: 'trip cancelled',
+                launches: [launch],
+            };
+        },
     },
     // can write resolvers for types in addition to Query and Mutations
     Mission: {
