@@ -29,12 +29,12 @@ module.exports = {
     Mutation: {
         login: async (_, { email }, { dataSources }) => {
             const user = await dataSources.userAPI.findOrCreateUser({ email });
-            if (user) return new Buffer(email).toString('base64');
+            if (user) return Buffer(email).toString('base64');
         },
         // KEEP IN MIND: you are including a partial success as a complete success. 
         // In production, must handle both cases
         bookTrips: async (_, { launchIds }, { dataSources }) => {
-            const result = await dataSources.userAPI.bookTrips({ launchIds });
+            const results = await dataSources.userAPI.bookTrips({ launchIds });
             const launches = await dataSources.launchAPI.getLaunchesByIds({
                 launchIds,
             });
