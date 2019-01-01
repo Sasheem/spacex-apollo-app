@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reach/router": "^1.2.1",
+    "apollo-boost": "^0.1.23",
     "apollo-cache-inmemory": "alpha",
     "apollo-client": "alpha",
     "apollo-link-http": "^1.5.5",
