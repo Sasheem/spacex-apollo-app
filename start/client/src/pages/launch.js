@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 
 import Loading from '../components/loading';
 import Header from '../components/header';
-import Button from '../components/button';
+import { ActionButton } from '../containers';
 import LaunchDetail from '../components/launch-detail';
 import { LAUNCH_TILE_DATA } from './launches';
 
