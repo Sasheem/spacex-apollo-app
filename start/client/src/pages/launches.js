@@ -35,7 +35,7 @@ export default function Launches() {
             {({ data, loading, error, fetchMore }) => {
                 
                 if (loading) return <Loading />;
-                if (error) return <p>ERROR</p>
+                if (error) return <p>ERROR: {error.message}</p>
 
                 return (
                     <Fragment>
