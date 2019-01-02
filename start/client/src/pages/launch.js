@@ -41,7 +41,7 @@ export default function Launch({ launchId }) {
                             {data.launch.mission.name}
                         </Header>
                         <LaunchDetail {...data.launch} />
-                        <Button {...data.launch} />
+                        <ActionButton {...data.launch} />
                     </Fragment>
                 );
             }}
