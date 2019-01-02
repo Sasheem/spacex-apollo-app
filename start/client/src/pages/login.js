@@ -2,6 +2,7 @@ import React from 'react';
 import { Mutation, ApolloConsumer } from 'react-apollo';
 import gql from 'graphql-tag';
 
+import Loading from '../components/loading';
 import LoginForm from '../components/login-form';
 
 const LOGIN_USER = gql`
