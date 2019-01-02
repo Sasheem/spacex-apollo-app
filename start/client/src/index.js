@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ApolloClient from "apollo-boost";
+import ApolloClient, { HttpLink } from "apollo-boost";
 import gql from "graphql-tag";
 import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient({
-    uri: "http://localhost:4000/graphql"
+  cache,
+  link: new HttpLink({
+    uri: 'http://localhost:4000/graphql',
+    headers: {
+      authorization: localStorage.getItem('token'),
+    },
+  })
 });
 
 client
