@@ -17,23 +17,12 @@ const client = new ApolloClient({
     headers: {
       authorization: localStorage.getItem('token'),
     },
-  })
+  }),
+  initializers: {
+    isLoggedIn: () => !!localStorage.getItem('token'),
+    cartItems: () => [],
+  },
 });
-
-client
-.query({
-  query: gql`
-    query GetLaunch {
-      launch(id: 56) {
-        id
-        mission {
-          name
-        }
-      }
-    }
-  `
-})
-.then(result => console.log(result));
 
 ReactDOM.render(
   <ApolloProvider client={client}>
